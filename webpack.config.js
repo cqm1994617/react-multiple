@@ -22,9 +22,23 @@ function getEntry(globPath, pathDir) {
 }
 
 const entries = getEntry('src/page/*', 'src/page/')
-console.log(entries)
 
+const HtmlWebpackPlugins = []
 
+Object.keys(entries).forEach(item => {
+  const config = {
+    filename: './' + item + '.html', //生成的html存放路径，相对于path
+    template: './src/page/' + item + '/index.html', //html模板路径
+    inject: 'body', //js插入的位置，true/'head'/'body'/false
+    hash: true, //为静态资源生成hash值
+    chunks: [item],//需要引入的chunk，不配置就会引入所有页面的资源
+    minify: { //压缩HTML文件
+      removeComments: true, //移除HTML中的注释
+      collapseWhitespace: false //删除空白符与换行符
+    }
+  }
+  HtmlWebpackPlugins.push(new HtmlWebpackPlugin(config))
+})
 
 module.exports = {
   // entry: {
@@ -65,29 +79,8 @@ module.exports = {
     contentBase: './'
   },
   plugins: [
-    new ExtractTextPlugin('styles/[name].css'),
-    new HtmlWebpackPlugin({ //根据模板插入css/js等生成最终HTML
-      filename: './app1.html', //生成的html存放路径，相对于path
-      template: './src/page/app1/index.html', //html模板路径
-      inject: 'body', //js插入的位置，true/'head'/'body'/false
-      hash: true, //为静态资源生成hash值
-      chunks: ['app1'],//需要引入的chunk，不配置就会引入所有页面的资源
-      minify: { //压缩HTML文件
-        removeComments: true, //移除HTML中的注释
-        collapseWhitespace: false //删除空白符与换行符
-      }
-    }),
-    new HtmlWebpackPlugin({ //根据模板插入css/js等生成最终HTML
-      filename: './app2.html', //生成的html存放路径，相对于path
-      template: './src/page/app2/index.html', //html模板路径
-      inject: 'body', //js插入的位置，true/'head'/'body'/false
-      hash: true, //为静态资源生成hash值
-      chunks: ['app2'],//需要引入的chunk，不配置就会引入所有页面的资源
-      minify: { //压缩HTML文件
-        removeComments: true, //移除HTML中的注释
-        collapseWhitespace: false //删除空白符与换行符
-      }
-    })
+    new ExtractTextPlugin('./[name].css'),
+    ...HtmlWebpackPlugins
   ]
 
 }
