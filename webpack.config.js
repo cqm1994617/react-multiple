@@ -6,6 +6,10 @@ const CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const glob = require('glob')
 
+const entries = getEntry('src/page/*', 'src/page/')
+const HtmlWebpackPlugins = []
+const debug = process.env.NODE_ENV !== 'production'
+
 function getEntry(globPath, pathDir) {
   var files = glob.sync(globPath)
   var entries = {}, dirname, basename, pathname, extname
@@ -16,14 +20,10 @@ function getEntry(globPath, pathDir) {
     pathname = path.join(dirname, basename)
     pathname = pathDir ? pathname.replace(new RegExp('^' + pathDir), '') : pathname
 
-    entries[pathname] = path.resolve(__dirname, './' + entry)
+    entries[pathname] = ['babel-polyfill', path.resolve(__dirname, './' + entry)]
   })
   return entries
 }
-
-const entries = getEntry('src/page/*', 'src/page/')
-
-const HtmlWebpackPlugins = []
 
 Object.keys(entries).forEach(item => {
   const config = {
@@ -31,7 +31,7 @@ Object.keys(entries).forEach(item => {
     template: './src/page/' + item + '/index.html', //html模板路径
     inject: 'body', //js插入的位置，true/'head'/'body'/false
     hash: true, //为静态资源生成hash值
-    chunks: [item],//需要引入的chunk，不配置就会引入所有页面的资源
+    chunks: ['vendors', item],//需要引入的chunk，不配置就会引入所有页面的资源
     minify: { //压缩HTML文件
       removeComments: true, //移除HTML中的注释
       collapseWhitespace: false //删除空白符与换行符
@@ -39,6 +39,8 @@ Object.keys(entries).forEach(item => {
   }
   HtmlWebpackPlugins.push(new HtmlWebpackPlugin(config))
 })
+
+// console.log(entries)
 
 module.exports = {
   // entry: {
@@ -69,6 +71,15 @@ module.exports = {
           fallback: "style-loader",
           use: ['css-loader', 'sass-loader']
         })
+      },
+      {
+        test: /\.html$/,
+        use: [ {
+          loader: 'html-loader',
+          options: {
+            minimize: false
+          }
+        }]
       }
     ]
   },
@@ -80,6 +91,17 @@ module.exports = {
   },
   plugins: [
     new ExtractTextPlugin('./[name].css'),
+    new CommonsChunkPlugin({
+      name: 'vendors', // 将公共模块提取，生成名为`vendors`的chunk
+      chunks: Object.keys(entries),
+      minChunks: Object.keys(entries).length
+    }),
+    debug ? function() {} : new UglifyJsPlugin({ //压缩代码
+      compress: {
+        warnings: false
+      },
+      except: ['$super', '$', 'exports', 'require'] //排除关键字
+    }),
     ...HtmlWebpackPlugins
   ]
 
