@@ -8,31 +8,21 @@ const port = 8089
 const compiler = webpack(config)
 const app = express()
 
-const devMiddleware = webpackDevMiddleware(compiler, {
-  inline: true,
-  disableHostCheck: true,
-  contentBase: './',
-  hot: true
-})
+const debug = process.env.NODE_ENV !== 'production'
 
-app.use(devMiddleware)
+if (debug) {
+  const devMiddleware = webpackDevMiddleware(compiler, {
+    inline: true,
+    disableHostCheck: true,
+    contentBase: './',
+    hot: true
+  })
 
-app.get('/:viewname', function (req, res, next) {
-
-  const viewname = req.params.viewname ? req.params.viewname + '.html' : 'index.html';
-  const filepath = path.join(compiler.outputPath, viewname)
-
-  compiler.outputFileSystem.readFile(filepath, function (err, result) {
-    if (err) {
-      res.send(err)
-      return next(err)
-    }
-    res.set('content-type', 'text/html');
-    res.send(result);
-    res.end();
-  });
-})
+  app.use(devMiddleware)
+} else {
+  app.use(express.static(path.join(__dirname, 'build')));
+}
 
 app.listen(port, () => {
-  console.log('dev start')
+  console.log('server start')
 })

@@ -10,7 +10,6 @@ const entries = getEntry('src/page/*', 'src/page/')
 const HtmlWebpackPlugins = []
 const debug = process.env.NODE_ENV !== 'production'
 
-
 function getEntry(globPath, pathDir) {
   var files = glob.sync(globPath)
   var entries = {}, dirname, basename, pathname, extname
@@ -99,12 +98,6 @@ module.exports = {
         }]
       }
     ]
-  },
-  devServer: {
-    inline: true,
-    disableHostCheck: true,
-    port: 8088,
-    contentBase: './'
   },
   plugins: [
     new ExtractTextPlugin('./[name].css'),

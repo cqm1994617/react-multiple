@@ -7,6 +7,8 @@
     "start": "node ./server.js",
     "dev": "webpack",
     "build": "cross-env NODE_ENV=production webpack -p",
+    "production": "cross-env NODE_ENV=production node ./server.js",
+    "server:production": "cross-env NODE_ENV=production pm2 start ./server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -37,6 +39,7 @@
     "style-loader": "^0.19.1",
     "webpack": "^3.10.0",
     "webpack-dev-middleware": "^2.0.4",
-    "webpack-dev-server": "^2.10.0"
+    "webpack-dev-server": "^2.10.0",
+    "webpack-hot-middleware": "^2.21.0"
   }
 }
