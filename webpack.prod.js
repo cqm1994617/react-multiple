@@ -8,7 +8,6 @@ const glob = require('glob')
 
 const entries = getEntry('src/page/*', 'src/page/')
 const HtmlWebpackPlugins = []
-const debug = process.env.NODE_ENV !== 'production'
 
 function getEntry(globPath, pathDir) {
   var files = glob.sync(globPath)
@@ -106,8 +105,7 @@ module.exports = {
       chunks: Object.keys(entries),
       minChunks: Object.keys(entries).length
     }),
-    debug ? function () {
-    } : new UglifyJsPlugin({ //压缩代码
+    new UglifyJsPlugin({ //压缩代码
       compress: {
         warnings: false
       },
