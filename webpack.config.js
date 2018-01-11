@@ -10,9 +10,11 @@ const entries = getEntry('src/page/*', 'src/page/')
 const HtmlWebpackPlugins = []
 const debug = process.env.NODE_ENV !== 'production'
 
+
 function getEntry(globPath, pathDir) {
   var files = glob.sync(globPath)
   var entries = {}, dirname, basename, pathname, extname
+  console.log(files)
   files.forEach(entry => {
     dirname = path.dirname(entry)
     extname = path.extname(entry)
@@ -69,12 +71,27 @@ module.exports = {
         test: /\.(css|sass|scss)$/,
         use: ExtractTextPlugin.extract({
           fallback: "style-loader",
-          use: ['css-loader', 'sass-loader']
+          use: [
+            {
+              loader: 'css-loader'
+            },
+            {
+              loader: 'sass-loader'
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                config: {
+                  path: './postcss.config.js' //其实默认情况可以不要
+                }
+              }
+            }
+          ]
         })
       },
       {
         test: /\.html$/,
-        use: [ {
+        use: [{
           loader: 'html-loader',
           options: {
             minimize: false
@@ -96,7 +113,8 @@ module.exports = {
       chunks: Object.keys(entries),
       minChunks: Object.keys(entries).length
     }),
-    debug ? function() {} : new UglifyJsPlugin({ //压缩代码
+    debug ? function () {
+    } : new UglifyJsPlugin({ //压缩代码
       compress: {
         warnings: false
       },

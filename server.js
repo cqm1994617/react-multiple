@@ -1,4 +1,4 @@
-const config = require('./webpack.config')
+const config = require('./webpack.config.js')
 const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const express = require('express')
