@@ -41,21 +41,6 @@ glob.sync(rootPath + 'src/page/**/*.html').forEach(entry => {
   HtmlWebpackPlugins.push(new HtmlWebpackPlugin(config))
 })
 
-Object.keys(entries).forEach(item => {
-  const config = {
-    filename: './' + item + '.html', //生成的html存放路径，相对于path
-    template: rootPath + 'src/page/' + item + '/index.html', //html模板路径
-    inject: 'body', //js插入的位置，true/'head'/'body'/false
-    hash: true, //为静态资源生成hash值
-    chunks: ['vendors', item],//需要引入的chunk，不配置就会引入所有页面的资源
-    minify: { //压缩HTML文件
-      removeComments: true, //移除HTML中的注释
-      collapseWhitespace: false //删除空白符与换行符
-    }
-  }
-  HtmlWebpackPlugins.push(new HtmlWebpackPlugin(config))
-})
-
 module.exports = {
   entry: entries,
   output: {
