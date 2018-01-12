@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./server.js",
-    "dev": "webpack --config webpack.dev.js",
-    "build": "cross-env NODE_ENV=production webpack --config webpack.prod.js -p",
+    "start": "npm run dev && node ./server.js",
+    "dev": "webpack --config ./config/webpack.dev.js",
+    "build": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod.js -p",
     "production": "cross-env NODE_ENV=production node ./server.js",
     "server:production": "cross-env NODE_ENV=production pm2 start ./server.js",
     "test": "echo \"Error: no test specified\" && exit 1"

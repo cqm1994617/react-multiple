@@ -1,4 +1,4 @@
-const config = require('./webpack.dev.js')
+const config = require('./config/webpack.dev.js')
 const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')

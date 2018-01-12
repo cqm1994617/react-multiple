@@ -5,24 +5,21 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 const glob = require('glob')
 
-const entries = getEntry('src/page/*', 'src/page/')
-const HtmlWebpackPlugins = []
+const rootPath = path.join(__dirname, '../')
 
-console.log(glob.sync('./src/page/*'))
+const entries = getEntry(rootPath + 'src/page/*', rootPath + 'src/page/')
+const HtmlWebpackPlugins = []
 
 function getEntry(globPath, pathDir) {
   var files = glob.sync(globPath)
   var entries = {}, dirname, basename, pathname, extname
-  console.log(files)
   files.forEach(entry => {
     dirname = path.dirname(entry)
     extname = path.extname(entry)
     basename = path.basename(entry, extname)
     pathname = path.join(dirname, basename)
-    console.log(pathname)
     pathname = pathDir ? pathname.replace(new RegExp('^' + pathDir), '') : pathname
-
-    entries[pathname] = ['babel-polyfill', path.resolve(__dirname, './' + entry), 'webpack-hot-middleware/client?reload=true']
+    entries[pathname] = ['babel-polyfill', entry, 'webpack-hot-middleware/client?reload=true']
   })
   console.log(entries)
   return entries
@@ -31,7 +28,7 @@ function getEntry(globPath, pathDir) {
 Object.keys(entries).forEach(item => {
   const config = {
     filename: './' + item + '.html', //生成的html存放路径，相对于path
-    template: './src/page/' + item + '/index.html', //html模板路径
+    template: rootPath + 'src/page/' + item + '/index.html', //html模板路径
     inject: 'body', //js插入的位置，true/'head'/'body'/false
     hash: true, //为静态资源生成hash值
     chunks: ['vendors', item],//需要引入的chunk，不配置就会引入所有页面的资源
@@ -46,7 +43,7 @@ Object.keys(entries).forEach(item => {
 module.exports = {
   entry: entries,
   output: {
-    path: path.resolve(__dirname, './build'),
+    path: path.resolve(__dirname, '../build'),
     publicPath: '/',
     filename: '[name].js'
   },
@@ -77,7 +74,7 @@ module.exports = {
               loader: 'postcss-loader',
               options: {
                 config: {
-                  path: './postcss.config.js' //其实默认情况可以不要
+                  path: './config/postcss.config.js'
                 }
               }
             }
