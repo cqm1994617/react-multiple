@@ -20,7 +20,7 @@ function getEntry(globPath, pathDir) {
     basename = path.basename(entry, extname)
     pathname = path.join(dirname, basename)
     pathname = pathDir ? pathname.replace(new RegExp('^' + pathDir), '') : pathname
-    entries[pathname] = ['babel-polyfill', entry, 'webpack-hot-middleware/client?reload=true']
+    entries[pathname] = ['babel-polyfill', entry]
   })
   console.log(entries)
   return entries

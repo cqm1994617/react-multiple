@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run dev && node ./server.js",
+    "start": "node ./server/devServer.js",
     "dev": "webpack --config ./config/webpack.dev.js",
     "build": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod.js -p",
-    "production": "cross-env NODE_ENV=production node ./server.js",
-    "server:production": "cross-env NODE_ENV=production pm2 start ./server.js",
+    "production": "cross-env NODE_ENV=production node ./server/prodServer.js",
+    "server:production": "cross-env NODE_ENV=production pm2 start ./server/prodServer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
