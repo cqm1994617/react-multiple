@@ -8,6 +8,8 @@ const glob = require('glob')
 const entries = getEntry('src/page/*', 'src/page/')
 const HtmlWebpackPlugins = []
 
+console.log(glob.sync('./src/page/*'))
+
 function getEntry(globPath, pathDir) {
   var files = glob.sync(globPath)
   var entries = {}, dirname, basename, pathname, extname
@@ -17,10 +19,12 @@ function getEntry(globPath, pathDir) {
     extname = path.extname(entry)
     basename = path.basename(entry, extname)
     pathname = path.join(dirname, basename)
+    console.log(pathname)
     pathname = pathDir ? pathname.replace(new RegExp('^' + pathDir), '') : pathname
 
-    entries[pathname] = ['babel-polyfill', path.resolve(__dirname, './' + entry)]
+    entries[pathname] = ['babel-polyfill', path.resolve(__dirname, './' + entry), 'webpack-hot-middleware/client?reload=true']
   })
+  console.log(entries)
   return entries
 }
 
@@ -99,6 +103,7 @@ module.exports = {
       chunks: Object.keys(entries),
       minChunks: Object.keys(entries).length
     }),
+    new webpack.HotModuleReplacementPlugin(),
     ...HtmlWebpackPlugins
   ]
 
