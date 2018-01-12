@@ -2,13 +2,13 @@ const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
-const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+const CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin
+const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin
 const glob = require('glob')
 
 const rootPath = path.join(__dirname, '../')
 
-const entries = getEntry(rootPath + 'src/page/*', rootPath + 'src/page/')
+const entries = getEntry(rootPath + 'src/page/**/*.js', rootPath + 'src/page/')
 const HtmlWebpackPlugins = []
 
 function getEntry(globPath, pathDir) {
@@ -20,11 +20,28 @@ function getEntry(globPath, pathDir) {
     basename = path.basename(entry, extname)
     pathname = path.join(dirname, basename)
     pathname = pathDir ? pathname.replace(new RegExp('^' + pathDir), '') : pathname
+    pathname = pathname.split('/')[0]
     entries[pathname] = ['babel-polyfill', entry]
   })
-  console.log(entries)
   return entries
 }
+
+glob.sync(rootPath + 'src/page/**/*.html').forEach(entry => {
+  const pathArr = entry.split('/')
+  const fileName = pathArr[pathArr.length - 2]
+  const config = {
+    filename: './' + fileName + '.html', //生成的html存放路径，相对于path
+    template: rootPath + 'src/page/' + fileName + '/index.html', //html模板路径
+    inject: 'body', //js插入的位置，true/'head'/'body'/false
+    hash: true, //为静态资源生成hash值
+    chunks: ['vendors', fileName],//需要引入的chunk，不配置就会引入所有页面的资源
+    minify: { //压缩HTML文件
+      removeComments: true, //移除HTML中的注释
+      collapseWhitespace: false //删除空白符与换行符
+    }
+  }
+  HtmlWebpackPlugins.push(new HtmlWebpackPlugin(config))
+})
 
 Object.keys(entries).forEach(item => {
   const config = {
@@ -40,7 +57,6 @@ Object.keys(entries).forEach(item => {
   }
   HtmlWebpackPlugins.push(new HtmlWebpackPlugin(config))
 })
-
 
 module.exports = {
   entry: entries,
@@ -76,7 +92,7 @@ module.exports = {
               loader: 'postcss-loader',
               options: {
                 config: {
-                  path: './config/postcss.config.js' //其实默认情况可以不要
+                  path: './config/postcss.config.js'
                 }
               }
             }
