@@ -13,16 +13,14 @@ const HtmlWebpackPlugins = []
 
 function getEntry(globPath, pathDir) {
   var files = glob.sync(globPath)
-  var entries = {}, dirname, basename, pathname, extname
+  console.log(files)
+  var entries = {}
   files.forEach(entry => {
-    dirname = path.dirname(entry)
-    extname = path.extname(entry)
-    basename = path.basename(entry, extname)
-    pathname = path.join(dirname, basename)
-    pathname = pathDir ? pathname.replace(new RegExp('^' + pathDir), '') : pathname
-    pathname = pathname.split('/')[0]
-    entries[pathname] = ['babel-polyfill', entry]
+    const pathArr = entry.split('/')
+    const fileName = pathArr[pathArr.length - 2]
+    entries[fileName] = ['babel-polyfill', entry, 'webpack-hot-middleware/client?reload=true']
   })
+  console.log(entries)
   return entries
 }
 
