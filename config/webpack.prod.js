@@ -18,7 +18,7 @@ function getEntry(globPath, pathDir) {
   files.forEach(entry => {
     const pathArr = entry.split('/')
     const fileName = pathArr[pathArr.length - 2]
-    entries[fileName] = ['babel-polyfill', entry, 'webpack-hot-middleware/client?reload=true']
+    entries[fileName] = ['babel-polyfill', entry]
   })
   console.log(entries)
   return entries

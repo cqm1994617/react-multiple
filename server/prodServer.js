@@ -8,6 +8,8 @@ const app = express()
 app.use(express.static(path.join(__dirname, '../build')));
 
 app.get('/:viewName', function (req, res, next) {
+  if (req.params.viewName === 'favicon.ico')  return
+
   const viewName = req.params.viewName ? req.params.viewName + '.html' : 'index.html'
   const pathName = path.join(__dirname, '../build', viewName)
 
