@@ -1,0 +1,17 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body, body > div {
+  height: 100%;
+}
+
+.container {
+  display: flex;
+  height: 100%;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
