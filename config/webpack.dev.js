@@ -61,27 +61,13 @@ module.exports = {
       },
       {
         test: /\.(css|sass|scss)$/,
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          allChunks: true,
-          disable: true,
-          use: [
-            {
-              loader: 'css-loader'
-            },
-            {
-              loader: 'sass-loader'
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                config: {
-                  path: './config/postcss.config.js'
-                }
-              }
-            }
-          ]
-        })
+        use: [{
+          loader: 'style-loader'
+        }, {
+          loader: 'css-loader'
+        }, {
+          loader: 'sass-loader'
+        }]
       },
       {
         test: /\.html$/,
